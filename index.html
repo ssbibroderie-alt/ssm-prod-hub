@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM // CLOUD HUB v5.6</title>
+    <title>SSM // CLOUD HUB v6.0</title>
 
     <link rel="manifest" href='data:application/manifest+json,{"name":"Shin Sekai Master","short_name":"SSM","start_url":".","display":"standalone","background_color":"#030508","theme_color":"#00f2ff","icons":[{"src":"https://via.placeholder.com/192/00f2ff/000000?text=SSM","sizes":"192x192","type":"image/png"}]}'>
     <script>
@@ -13,7 +13,6 @@
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -26,38 +25,52 @@
         * { box-sizing: border-box; outline: none; }
         ::-webkit-scrollbar { display: none; }
         body { background-color: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 20px; }
+        
+        /* Navigation */
         .nav-tabs { display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid var(--card-border); }
         .nav-btn { background: transparent; color: var(--dim); border: none; padding: 12px 25px; cursor: pointer; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; }
         .nav-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
+
+        /* Panels */
         .glass-panel { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
         .data-cell { width: 60px; height: 40px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); border-radius: 8px; color: #fff; font-family: 'JetBrains Mono'; text-align: center; font-size: 1rem; }
         .view-only { pointer-events: none; border: none !important; background: transparent !important; opacity: 1; font-weight: 800; }
-        .order-card { background: var(--card-bg); border: 2px solid var(--accent); border-radius: 20px; overflow: hidden; margin-bottom: 40px; }
-        .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 242, 255, 0.05); }
+        
+        /* Cards */
+        .order-card { background: var(--card-bg); border: 2px solid var(--accent); border-radius: 20px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 242, 255, 0.05); border-bottom: 1px solid var(--card-border); }
+        
+        /* Status Bar */
         .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--card-border); }
-        .status-btn { padding: 12px; text-align: center; font-size: 0.7rem; font-weight: 800; border-right: 1px solid var(--card-border); color: #64748b; cursor: pointer; }
+        .status-btn { padding: 12px; text-align: center; font-size: 0.7rem; font-weight: 800; border-right: 1px solid var(--card-border); color: #64748b; cursor: pointer; text-transform: uppercase; }
         .status-btn.done { color: var(--success); background: rgba(46, 213, 115, 0.1); text-decoration: underline; }
+
+        /* Tables */
         table { width: 100%; border-collapse: collapse; }
-        th { font-size: 0.6rem; color: var(--dim); padding: 10px; text-transform: uppercase; }
+        th { font-size: 0.6rem; color: var(--dim); padding: 10px; text-transform: uppercase; letter-spacing: 1px; }
         td { padding: 8px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .total-row { background: rgba(0, 242, 255, 0.1); font-weight: 800; color: var(--accent); border-top: 2px solid var(--accent); }
+
+        /* Buttons & UI */
+        button { background: var(--accent); color: #000; font-weight: 800; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; transition: 0.3s; }
+        button:active { transform: scale(0.95); }
+        .btn-del { background: var(--danger) !important; color: white !important; }
+        .btn-pdf { background: #ff4757 !important; color: white !important; }
+        
+        /* Modals */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); padding: 20px; overflow-y: auto; }
         .modal-content { background: var(--bg); max-width: 900px; margin: auto; border: 2px solid var(--accent); border-radius: 20px; padding: 20px; position: relative; }
         .close { position: absolute; right: 20px; top: 15px; color: var(--danger); font-size: 2rem; cursor: pointer; }
-        .archive-item { background: rgba(255,255,255,0.03); padding: 15px; margin-bottom: 10px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; border-left: 4px solid var(--dim); }
-        .archive-actions { display: flex; gap: 10px; width: 100%; }
-        button { background: var(--accent); color: #000; font-weight: 800; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; flex: 1; }
-        .btn-del { background: var(--danger) !important; color: white !important; flex: 0.2; }
-        .btn-pdf { background: #ff4757 !important; color: white !important; }
-        .btn-view { background: rgba(255,255,255,0.1); color: white; }
-        #cloud-status { position: fixed; top: 10px; right: 10px; font-size: 0.6rem; letter-spacing: 1px; padding: 5px 10px; border-radius: 20px; background: rgba(0,0,0,0.5); z-index: 2000; }
+
+        /* Cloud Status */
+        #cloud-status { position: fixed; top: 10px; right: 10px; font-size: 0.6rem; padding: 5px 12px; border-radius: 20px; background: rgba(0,0,0,0.8); z-index: 2000; font-weight: 800; }
         .sync-ok { color: var(--success); border: 1px solid var(--success); }
         .sync-load { color: var(--accent); border: 1px solid var(--accent); }
-        #section-prod, #section-archive { display: none; }
-        .active-view { display: block !important; }
+        
         .signature { text-align: center; margin-top: 50px; padding: 20px; font-size: 0.7rem; color: #64748b; letter-spacing: 3px; font-weight: 800; border-top: 1px solid var(--card-border); }
-        /* Zone invisible pour export PDF */
         #pdf-export-zone { position: absolute; left: -9999px; top: -9999px; width: 800px; background: white; }
+        
+        input[type="text"], input[type="tel"] { border: 1px solid var(--card-border); border-radius: 8px; background: rgba(255,255,255,0.05); color: white; padding: 10px; }
     </style>
 </head>
 <body onload="initCloud()">
@@ -69,28 +82,28 @@
     <button id="btn-archive" class="nav-btn" onclick="switchTab('archive')">Archives</button>
 </div>
 
-<div id="section-prod" class="active-view">
+<div id="section-prod" style="display:block">
     <div class="auth-box glass-panel" style="display:flex; align-items:center; gap:10px; justify-content: center; flex-wrap: wrap;">
-        <input type="password" id="pass" placeholder="CODE" style="width: 100px; height: 40px; text-align: center; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--card-border); border-radius: 8px;">
+        <input type="password" id="pass" placeholder="CODE SECTEUR" style="width: 140px; text-align: center;">
         <button onclick="login()">ENTRER</button>
         <button onclick="pullData()" style="background:var(--dim); color:white;">🔄 REFRESH</button>
     </div>
 
     <div id="creation-sector" class="glass-panel" style="display:none">
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-            <input type="text" id="c-num" placeholder="N° CMD">
-            <input type="text" id="c-client" placeholder="CLIENT">
-            <input type="text" id="c-cat" placeholder="CATÉGORIE">
-            <input type="text" id="c-tailles" placeholder="TAILLES (ex: 0,1,2,3...)">
+            <input type="text" id="c-num" placeholder="N° COMMANDE">
+            <input type="text" id="c-client" placeholder="NOM CLIENT">
+            <input type="text" id="c-cat" placeholder="CATÉGORIE (Ex: T-SHIRT)">
+            <input type="text" id="c-tailles" placeholder="TAILLES (Ex: S,M,L,XL)">
         </div>
-        <button id="btn-submit" onclick="ajouterFiche()" style="width:100%; margin-top:15px; background: var(--success);">GÉNÉRER & ENVOYER AU CLOUD</button>
+        <button id="btn-submit" onclick="ajouterFiche()" style="width:100%; margin-top:15px; background: var(--success); color:black;">LANCER LA PRODUCTION</button>
     </div>
     <div id="prod-container"></div>
 </div>
 
-<div id="section-archive">
+<div id="section-archive" style="display:none">
     <div class="glass-panel">
-        <input type="text" id="search-input" style="width:100%; padding:15px; background:transparent; border:1px solid var(--accent); color:white; border-radius:10px; margin-bottom:20px;" placeholder="🔍 RECHERCHER PAR NOM OU N°..." oninput="renderArchives()">
+        <input type="text" id="search-input" style="width:100%; padding:15px; margin-bottom:20px;" placeholder="🔍 RECHERCHER UN CLIENT OU UN N°..." oninput="renderArchives()">
         <div id="archive-list"></div>
     </div>
 </div>
@@ -104,10 +117,10 @@
 
 <div id="pdf-export-zone"></div>
 
-<div class="signature"> [ 2026-03-09 ] — SHIN SEKAI MASTER CLOUD — v5.6 </div>
+<div class="signature"> [ 2026-03-09 ] — SHIN SEKAI MASTER CLOUD — v6.0 </div>
 
 <script>
-    const CLOUD_URL = "https://script.google.com/macros/s/AKfycbyBgEh0Vu6p3RUEV9WNF0S6Kv3rOCwcvKp8xtql639-AX4tlanVGJzhxJbXYkL0Dj85Pw/exec";
+    const CLOUD_URL = "https://script.google.com/macros/s/AKfycbx7f3-CnYPrNkwO5RqfcWQL2tePjYx6l3WMDId92zZ5z3WeSfbciIWLBBpwM1yrUSPM/exec";
     let role = "";
     let appData = { prod: [], arch: [] };
     const sectors = { '1111': 'coupe', '2222': 'couture', '3333': 'logo', '4444': 'finition' };
@@ -115,20 +128,30 @@
     async function initCloud() { await pullData(); }
 
     async function pullData() {
-        setSyncStatus("Chargement...", "sync-load");
+        setSyncStatus("CHARGEMENT...", "sync-load");
         try {
             const resp = await fetch(CLOUD_URL, { method: "POST", body: JSON.stringify({ action: "load" }) });
             const data = await resp.json();
-            if(data) { appData.prod = data.prod || []; appData.arch = data.arch || []; }
+            if(data) { 
+                appData.prod = data.prod || []; 
+                appData.arch = data.arch || []; 
+            }
             renderProd();
             setSyncStatus("SYNCHRONISÉ", "sync-ok");
         } catch (e) { setSyncStatus("ERREUR RÉSEAU", "sync-load"); }
     }
 
     async function pushData() {
-        setSyncStatus("Envoi...", "sync-load");
+        // Sécurité anti-effacement : ne jamais envoyer si les deux listes sont vides par erreur technique
+        if (appData.prod.length === 0 && appData.arch.length === 0) return;
+        
+        setSyncStatus("ENVOI CLOUD...", "sync-load");
         try {
-            await fetch(CLOUD_URL, { method: "POST", body: JSON.stringify({ action: "save", payload: appData }), mode: 'no-cors' });
+            await fetch(CLOUD_URL, { 
+                method: "POST", 
+                mode: 'no-cors',
+                body: JSON.stringify({ action: "save", payload: appData }) 
+            });
             setSyncStatus("SYNCHRONISÉ", "sync-ok");
         } catch (e) { setSyncStatus("ERREUR CLOUD", "sync-load"); }
     }
@@ -143,46 +166,56 @@
         if(role) {
             document.getElementById('creation-sector').style.display = (role === 'coupe' ? 'block' : 'none');
             renderProd();
+            alert("Connecté Secteur : " + role.toUpperCase());
         } else { alert("Code invalide"); }
     }
 
     async function ajouterFiche() {
-        const btn = document.getElementById('btn-submit');
         const n = document.getElementById('c-num').value, c = document.getElementById('c-client').value, t = document.getElementById('c-tailles').value;
-        if(!n || !c || !t) return;
-        btn.innerText = "ENVOI EN COURS...";
-        btn.disabled = true;
+        if(!n || !c || !t) { alert("Champs manquants"); return; }
+        
         appData.prod.push({
-            id: Date.now(), num: n, client: c, cat: document.getElementById('c-cat').value.toUpperCase(),
+            id: Date.now(),
+            num: n,
+            client: c.toUpperCase(),
+            cat: document.getElementById('c-cat').value.toUpperCase(),
             data: t.split(',').map(s => ({ t:s.trim(), c:0, cok:0, crb:0, lok:0, lrb:0, fok:0, frb:0 })),
             status: { coupe:'', couture:'', logo:'', finition:'' }
         });
+        
+        // Reset champs
+        document.getElementById('c-num').value = "";
+        document.getElementById('c-client').value = "";
+        
+        renderProd();
         await pushData();
-        setTimeout(() => {
-            btn.innerText = "GÉNÉRER & ENVOYER AU CLOUD"; btn.disabled = false;
-            document.getElementById('c-num').value = ""; document.getElementById('c-client').value = "";
-            renderProd();
-        }, 800);
     }
 
     function getFicheHTML(f, isView) {
         const sums = {c:0, cok:0, crb:0, lok:0, lrb:0, fok:0, frb:0};
         f.data.forEach(r => { sums.c+=r.c; sums.cok+=r.cok; sums.crb+=r.crb; sums.lok+=r.lok; sums.lrb+=r.lrb; sums.fok+=r.fok; sums.frb+=r.frb; });
-        return `<div class="order-card">
+        
+        return `
+        <div class="order-card">
             <div class="card-header">
-                <div><strong>#${f.num} — ${f.client}</strong> <small>(${f.cat})</small></div>
-                ${!isView ? `<div><button onclick="archiver(${f.id})" style="background:var(--success)">ARCHIVER</button>
-                ${role==='coupe' ? `<button onclick="supprP(${f.id})" class="btn-del">X</button>` : ''}</div>` : ''}
+                <div><strong>#${f.num} — ${f.client}</strong> <br><small>${f.cat}</small></div>
+                ${!isView ? `<div>
+                    <button onclick="archiver(${f.id})" style="background:var(--success); color:black;">ARCHIVER</button>
+                    ${role==='coupe' ? `<button onclick="supprP(${f.id})" class="btn-del">X</button>` : ''}
+                </div>` : ''}
             </div>
             <div class="status-grid">
                 ${['coupe','couture','logo','finition'].map(s => `<div class="status-btn ${f.status[s]}" onclick="${!isView?`toggleS(${f.id},'${s}')`:''}">${s}</div>`).join('')}
             </div>
             <div style="padding:15px; overflow-x:auto;">
                 <table>
-                    <thead><tr><th>Taille</th><th>Cut</th><th colspan="2">Couture</th><th colspan="2">Logo</th><th colspan="2">Finish</th></tr></thead>
+                    <thead>
+                        <tr><th>Taille</th><th>Coupe</th><th colspan="2">Couture</th><th colspan="2">Logo</th><th colspan="2">Finis.</th></tr>
+                        <tr style="font-size:0.5rem; color:var(--dim);"><th></th><th>OK</th><th>OK</th><th>RB</th><th>OK</th><th>RB</th><th>OK</th><th>RB</th></tr>
+                    </thead>
                     <tbody>
                         ${f.data.map((r, i) => `<tr>
-                            <td>${r.t}</td>
+                            <td style="font-weight:800; color:var(--accent)">${r.t}</td>
                             <td><input type="tel" class="data-cell ${role!=='coupe'||isView?'view-only':''}" value="${r.c}" onchange="upd(${f.id},${i},'c',this.value)"></td>
                             <td><input type="tel" class="data-cell ${role!=='couture'||isView?'view-only':''}" value="${r.cok}" onchange="upd(${f.id},${i},'cok',this.value)"></td>
                             <td><input type="tel" class="data-cell ${role!=='couture'||isView?'view-only':''}" style="color:var(--danger)" value="${r.crb}" onchange="upd(${f.id},${i},'crb',this.value)"></td>
@@ -198,84 +231,75 @@
         </div>`;
     }
 
-    async function downloadPDF(fid) {
-        const f = appData.arch.find(x => x.id === fid);
-        const sums = {c:0, cok:0, crb:0, lok:0, lrb:0, fok:0, frb:0};
-        f.data.forEach(r => { sums.c+=r.c; sums.cok+=r.cok; sums.crb+=r.crb; sums.lok+=r.lok; sums.lrb+=r.lrb; sums.fok+=r.fok; sums.frb+=r.frb; });
-        
-        const zone = document.getElementById('pdf-export-zone');
-        zone.innerHTML = `
-            <div style="padding:40px; color:black; font-family:sans-serif;">
-                <h1 style="border-bottom:3px solid #000; padding-bottom:10px;">SHIN SEKAI - FICHE #${f.num}</h1>
-                <p><b>CLIENT :</b> ${f.client} | <b>CATÉGORIE :</b> ${f.cat}</p>
-                <table border="1" style="width:100%; border-collapse:collapse; margin-top:20px; text-align:center;">
-                    <thead style="background:#f0f0f0;">
-                        <tr><th>Taille</th><th>Coupe</th><th>Cout OK</th><th>Cout RB</th><th>Logo OK</th><th>Logo RB</th><th>Fin OK</th><th>Fin RB</th></tr>
-                    </thead>
-                    <tbody>
-                        ${f.data.map(r => `<tr><td>${r.t}</td><td>${r.c}</td><td>${r.cok}</td><td>${r.crb}</td><td>${r.lok}</td><td>${r.lrb}</td><td>${r.fok}</td><td>${r.frb}</td></tr>`).join('')}
-                        <tr style="font-weight:bold; background:#f0f0f0;"><td>TOTAL</td><td>${sums.c}</td><td>${sums.cok}</td><td>${sums.crb}</td><td>${sums.lok}</td><td>${sums.lrb}</td><td>${sums.fok}</td><td>${sums.frb}</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        `;
-        const canvas = await html2canvas(zone, { scale: 2 });
-        const imgData = canvas.toDataURL('image/png');
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        pdf.addImage(imgData, 'PNG', 0, 0, 210, (canvas.height * 210) / canvas.width);
-        pdf.save(`FICHE_${f.num}.pdf`);
-        zone.innerHTML = "";
+    function renderProd() { 
+        document.getElementById('prod-container').innerHTML = appData.prod.slice().reverse().map(f => getFicheHTML(f, false)).join(''); 
     }
-
-    function renderProd() { document.getElementById('prod-container').innerHTML = appData.prod.slice().reverse().map(f => getFicheHTML(f, false)).join(''); }
 
     function upd(fid, idx, field, val) {
         const f = appData.prod.find(x => x.id === fid);
-        if(f) { f.data[idx][field] = parseInt(val) || 0; pushData(); renderProd(); }
+        if(f) { 
+            f.data[idx][field] = parseInt(val) || 0; 
+            pushData(); 
+            renderProd(); 
+        }
     }
 
     function toggleS(fid, s) {
         const f = appData.prod.find(x => x.id === fid);
-        if(f) { f.status[s] = f.status[s] === 'done' ? '' : 'done'; pushData(); renderProd(); }
+        if(f) { 
+            f.status[s] = f.status[s] === 'done' ? '' : 'done'; 
+            pushData(); 
+            renderProd(); 
+        }
     }
 
     async function archiver(fid) {
-        const f = appData.prod.find(x => x.id === fid);
-        if(!f) return;
-        if(!appData.arch.find(x => x.id === fid)) {
-            appData.arch.push(JSON.parse(JSON.stringify(f)));
-            await pushData(); alert("Copié aux Archives.");
-        } else { alert("Déjà archivé."); }
+        if(!confirm("Envoyer vers les archives ?")) return;
+        const fIndex = appData.prod.findIndex(x => x.id === fid);
+        if(fIndex > -1) {
+            appData.arch.push(appData.prod[fIndex]);
+            appData.prod.splice(fIndex, 1);
+            await pushData();
+            renderProd();
+        }
     }
 
     function renderArchives() {
         const s = document.getElementById('search-input').value.toLowerCase();
-        const list = document.getElementById('archive-list');
-        list.innerHTML = appData.arch.slice().reverse()
+        document.getElementById('archive-list').innerHTML = appData.arch.slice().reverse()
             .filter(a => a.client.toLowerCase().includes(s) || a.num.toLowerCase().includes(s))
-            .map(a => `<div class="archive-item">
-                <div style="font-weight:bold; font-size:1rem;">#${a.num} — ${a.client}</div>
-                <div class="archive-actions">
-                    <button class="btn-view" onclick="openV(${a.id})">VOIR</button>
-                    <button class="btn-pdf" onclick="downloadPDF(${a.id})">TÉLÉCHARGER PDF</button>
-                    <button class="btn-del" onclick="supprA(${a.id})">X</button>
+            .map(a => `<div class="glass-panel" style="display:flex; justify-content:space-between; align-items:center;">
+                <div><strong>#${a.num}</strong> - ${a.client}</div>
+                <div style="display:flex; gap:5px;">
+                    <button onclick="openV(${a.id})" style="background:var(--dim); color:white;">VOIR</button>
+                    <button onclick="supprA(${a.id})" class="btn-del">X</button>
                 </div>
             </div>`).join('');
     }
 
     async function supprA(fid) { if(confirm("Supprimer l'archive ?")) { appData.arch = appData.arch.filter(x => x.id !== fid); await pushData(); renderArchives(); } }
-    async function supprP(fid) { if(confirm("Supprimer la fiche ?")) { appData.prod = appData.prod.filter(x => x.id !== fid); await pushData(); renderProd(); } }
-    function openV(fid) { const a = appData.arch.find(x => x.id === fid); document.getElementById('modal-body').innerHTML = getFicheHTML(a, true); document.getElementById('viewModal').style.display = "block"; }
+    async function supprP(fid) { if(confirm("Supprimer la fiche active ?")) { appData.prod = appData.prod.filter(x => x.id !== fid); await pushData(); renderProd(); } }
+    
+    function openV(fid) { 
+        const a = appData.arch.find(x => x.id === fid); 
+        document.getElementById('modal-body').innerHTML = getFicheHTML(a, true); 
+        document.getElementById('viewModal').style.display = "block"; 
+    }
+    
     function closeModal() { document.getElementById('viewModal').style.display = "none"; }
+    
     function switchTab(v) {
-        document.getElementById('section-prod').className = (v === 'prod' ? 'active-view' : '');
-        document.getElementById('section-archive').className = (v === 'archive' ? 'active-view' : '');
-        document.getElementById('btn-prod').className = 'nav-btn ' + (v === 'prod' ? 'active' : '');
-        document.getElementById('btn-archive').className = 'nav-btn ' + (v === 'archive' ? 'active' : '');
+        document.getElementById('section-prod').style.display = (v === 'prod' ? 'block' : 'none');
+        document.getElementById('section-archive').style.display = (v === 'archive' ? 'block' : 'none');
+        document.getElementById('btn-prod').classList.toggle('active', v==='prod');
+        document.getElementById('btn-archive').classList.toggle('active', v==='archive');
         if(v === 'archive') renderArchives();
     }
-    setInterval(async () => { if (document.activeElement.tagName !== 'INPUT') await pullData(); }, 30000);
+
+    // Auto-Sync toutes les 60 secondes pour mettre à jour les écrans des collègues
+    setInterval(async () => { 
+        if (document.activeElement.tagName !== 'INPUT') await pullData(); 
+    }, 60000);
 </script>
 </body>
 </html>
