@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SSM CLOUD HUB v7.8 - BLOCAGE PHYSIQUE</title>
+    <title>SSM CLOUD HUB v7.9 - TOTAUX RÉACTIVÉS</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -30,12 +30,10 @@
         
         button { background: var(--accent); color: #000; font-weight: 800; padding: 12px; border-radius: 8px; border: none; text-transform: uppercase; cursor: pointer; }
         .btn-full { width: 100%; margin-top: 5px; }
-        .btn-del { background: var(--danger) !important; color: white !important; padding: 5px 10px; font-size: 0.6rem; }
 
         .order-card { background: var(--card-bg); border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border); overflow: hidden; border-left: 4px solid var(--accent); }
         .card-header { padding: 12px; background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); }
-        .cat-tag { font-size: 0.55rem; background: var(--accent); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; text-transform: uppercase; }
-
+        
         .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
         .status-btn { padding: 10px; text-align: center; font-size: 0.6rem; font-weight: 800; border-right: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border); color: var(--dim); opacity: 0.3; }
         .status-btn.done { opacity: 1; color: var(--success); background: rgba(46, 213, 115, 0.1); }
@@ -44,17 +42,13 @@
         th { padding: 8px; color: var(--dim); font-size: 0.55rem; text-transform: uppercase; }
         td { padding: 4px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
         
-        /* CHAMPS DE DONNÉES - TRÈS LISIBLES */
         .data-cell { width: 42px; height: 32px; background: rgba(255,255,255,0.12); border: 1px solid var(--card-border); border-radius: 5px; text-align: center; color: #ffffff !important; font-family: 'JetBrains Mono'; font-weight: 700; font-size: 0.9rem; }
+        .data-cell:read-only { background: rgba(255,255,255,0.02); border-color: transparent; outline: none; }
         
-        /* Quand c'est bloqué : on retire juste le fond brillant mais le texte reste BLANC */
-        .data-cell:read-only { 
-            background: rgba(255,255,255,0.02); 
-            border-color: transparent;
-            outline: none;
-        }
-        
-        .total-row { color: var(--accent); font-weight: 800; background: rgba(0, 242, 255, 0.05); }
+        /* LIGNE DES TOTAUX */
+        .total-row { background: rgba(0, 242, 255, 0.08); font-weight: 800; color: var(--accent); font-family: 'JetBrains Mono'; font-size: 0.8rem; }
+        .total-row td { border-top: 1px solid var(--accent); padding: 8px 4px; }
+
         .signature { text-align: center; color: var(--dim); font-size: 0.7rem; padding: 40px; border-top: 1px solid var(--card-border); margin-top: 20px; }
     </style>
 </head>
@@ -89,7 +83,7 @@
 
 <div id="section-arch" style="display:none"><div id="arch-list"></div></div>
 
-<div class="signature">2026-03-05 — SSM CLOUD HUB v7.8</div>
+<div class="signature">2026-03-05 — SSM CLOUD HUB v7.9</div>
 
 <script>
     const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxVCFe2eAIuMscUhVKqUqN1v6fAl2lRtLPvFdjouhMMg8_yBByb1Yqe3GX9opUx40km/exec";
@@ -127,7 +121,6 @@
         } else { alert("Code Erroné"); }
     }
 
-    // LOGIQUE DE BLOCAGE : readOnly empêche l'écriture mais garde le texte blanc
     function isForbidden(field) {
         if (!role) return true; 
         if (role === 'coupe' && field === 'c') return false;
@@ -154,13 +147,18 @@
         const filtered = appData.prod.filter(f => f.client.toLowerCase().includes(query) || f.num.toLowerCase().includes(query));
 
         container.innerHTML = filtered.slice().reverse().map(f => {
+            // CALCUL DES TOTAUX
             const s = {c:0, cok:0, crb:0, lok:0, lrb:0, fok:0, frb:0};
-            f.data.forEach(r => { s.c+=r.c; s.cok+=r.cok; s.crb+=r.crb; s.lok+=r.lok; s.lrb+=r.lrb; s.fok+=r.fok; s.frb+=r.frb; });
+            f.data.forEach(r => { 
+                s.c += r.c; s.cok += r.cok; s.crb += r.crb; 
+                s.lok += r.lok; s.lrb += r.lrb; s.fok += r.fok; s.frb += r.frb; 
+            });
+
             return `
             <div class="order-card">
                 <div class="card-header">
-                    <div><strong>#${f.num}</strong> ${f.client} <span class="cat-tag">${f.cat}</span></div>
-                    <button style="background:var(--success); padding:5px" onclick="archiveOrder(${f.id})">FINIR</button>
+                    <div><strong>#${f.num}</strong> ${f.client}</div>
+                    <button style="background:var(--success); padding:5px; font-size:0.6rem" onclick="archiveOrder(${f.id})">TERMINER</button>
                 </div>
                 <div class="status-grid">
                     ${['coupe','couture','logo','finition'].map(st => `
@@ -173,7 +171,7 @@
                     <table>
                         <tr><th>T</th><th>C</th><th>CO</th><th>RB</th><th>L</th><th>RB</th><th>F</th><th>RB</th></tr>
                         ${f.data.map((r, i) => `<tr>
-                            <td style="color:var(--accent)">${r.t}</td>
+                            <td style="color:var(--accent); font-weight:800">${r.t}</td>
                             <td><input type="tel" class="data-cell" ${isForbidden('c') ? 'readonly' : ''} value="${r.c}" onchange="upd(${f.id},${i},'c',this.value)"></td>
                             <td><input type="tel" class="data-cell" ${isForbidden('cok') ? 'readonly' : ''} value="${r.cok}" onchange="upd(${f.id},${i},'cok',this.value)"></td>
                             <td><input type="tel" class="data-cell" ${isForbidden('crb') ? 'readonly' : ''} style="color:var(--danger)!important" value="${r.crb}" onchange="upd(${f.id},${i},'crb',this.value)"></td>
@@ -182,6 +180,16 @@
                             <td><input type="tel" class="data-cell" ${isForbidden('fok') ? 'readonly' : ''} value="${r.fok}" onchange="upd(${f.id},${i},'fok',this.value)"></td>
                             <td><input type="tel" class="data-cell" ${isForbidden('frb') ? 'readonly' : ''} style="color:var(--danger)!important" value="${r.frb}" onchange="upd(${f.id},${i},'frb',this.value)"></td>
                         </tr>`).join('')}
+                        <tr class="total-row">
+                            <td>TOT</td>
+                            <td>${s.c}</td>
+                            <td>${s.cok}</td>
+                            <td style="color:var(--danger)">${s.crb}</td>
+                            <td>${s.lok}</td>
+                            <td style="color:var(--danger)">${s.lrb}</td>
+                            <td>${s.fok}</td>
+                            <td style="color:var(--danger)">${s.frb}</td>
+                        </tr>
                     </table>
                 </div>
             </div>`;
