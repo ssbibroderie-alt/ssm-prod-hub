@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SSM CLOUD HUB v7.3</title>
+    <title>SSM CLOUD HUB v7.3.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -72,7 +72,7 @@
     <div id="creation-zone" class="glass-panel" style="display:none">
         <input type="text" id="c-num" placeholder="N° COMMANDE">
         <input type="text" id="c-client" placeholder="NOM CLIENT">
-        <input type="text" id="c-cat" placeholder="CATÉGORIE (Ex: POLO, ROBE, GILET...)">
+        <input type="text" id="c-cat" placeholder="TAPES LA CATÉGORIE (Ex: ROBE, CHEMISE...)">
         <input type="text" id="c-tailles" placeholder="TAILLES (Ex: S, M, L, XL)">
         <button class="btn-full" style="background:var(--success)" onclick="createOrder()">LANCER LA FABRICATION</button>
     </div>
@@ -87,7 +87,7 @@
     <div id="arch-list"></div>
 </div>
 
-<div class="signature">SSM CLOUD HUB // v7.3</div>
+<div class="signature">SSM CLOUD HUB // v7.3.1</div>
 
 <script>
     const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxVCFe2eAIuMscUhVKqUqN1v6fAl2lRtLPvFdjouhMMg8_yBByb1Yqe3GX9opUx40km/exec";
@@ -146,7 +146,7 @@
               t = document.getElementById('c-tailles').value, 
               cat = document.getElementById('c-cat').value.toUpperCase().trim();
         
-        if(!n || !c || !t || !cat) return alert("Remplis tous les champs (y compris la catégorie) !");
+        if(!n || !c || !t || !cat) return alert("Remplis tous les champs !");
         
         appData.prod.push({
             id: Date.now(), num: n, client: c.toUpperCase(), cat: cat,
@@ -161,7 +161,6 @@
     }
 
     function renderProd() {
-        // AMÉLIORATION : Génération dynamique des filtres selon ce qui existe dans la liste
         const catsExistantes = [...new Set(appData.prod.map(f => f.cat))].filter(c => c);
         const cats = ["TOUS", ...catsExistantes.sort()];
         
