@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SSM CLOUD HUB v7.6 - RECHERCHE GLOBALE</title>
+    <title>SSM CLOUD HUB v7.7 - LECTURE TOTALE / ACTION SECTORISÉE</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,44 +14,50 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 15px; padding-top: 110px; }
         
-        /* HEADER FIXE AVEC RECHERCHE */
         .fixed-header { position: fixed; top: 0; left: 0; right: 0; z-index: 2000; background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--card-border); padding: 5px 15px; }
-        #cloud-status { height: 25px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; letter-spacing: 1px; }
+        #cloud-status { height: 25px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; }
         .sync-ok { color: var(--success); }
         .sync-load { color: var(--accent); }
 
         .global-search { background: rgba(255,255,255,0.08); border: 1px solid var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; width: 100%; font-size: 0.8rem; margin-bottom: 5px; font-weight: 600; }
-        .global-search::placeholder { color: rgba(0, 242, 255, 0.3); }
 
         .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
         .nav-btn { flex: 1; background: var(--card-bg); color: var(--dim); border: 1px solid var(--card-border); padding: 12px; border-radius: 10px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; }
         .nav-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(0, 242, 255, 0.05); }
 
         .filter-bar { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 8px; }
-        .filter-chip { padding: 6px 15px; border-radius: 20px; background: var(--card-bg); border: 1px solid var(--card-border); font-size: 0.65rem; font-weight: 800; white-space: nowrap; color: var(--dim); cursor: pointer; }
+        .filter-chip { padding: 6px 15px; border-radius: 20px; background: var(--card-bg); border: 1px solid var(--card-border); font-size: 0.65rem; font-weight: 800; color: var(--dim); cursor: pointer; }
         .filter-chip.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
         .glass-panel { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px; margin-bottom: 20px; }
-        input[type="text"], input[type="password"], input[type="tel"] { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #fff; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 10px; font-size: 0.9rem; }
+        input[type="text"], input[type="password"] { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #fff; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 10px; }
         
-        button { background: var(--accent); color: #000; font-weight: 800; padding: 12px; border-radius: 8px; border: none; text-transform: uppercase; font-size: 0.7rem; cursor: pointer; }
+        button { background: var(--accent); color: #000; font-weight: 800; padding: 12px; border-radius: 8px; border: none; text-transform: uppercase; cursor: pointer; }
         .btn-full { width: 100%; margin-top: 5px; }
         .btn-del { background: var(--danger) !important; color: white !important; padding: 5px 10px; font-size: 0.6rem; }
 
         .order-card { background: var(--card-bg); border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border); overflow: hidden; border-left: 4px solid var(--accent); }
         .card-header { padding: 12px; background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); }
-        .cat-tag { font-size: 0.55rem; background: var(--accent); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; margin-left: 8px; text-transform: uppercase; }
+        .cat-tag { font-size: 0.55rem; background: var(--accent); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; text-transform: uppercase; }
 
         .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
         .status-btn { padding: 10px; text-align: center; font-size: 0.6rem; font-weight: 800; border-right: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border); color: var(--dim); opacity: 0.3; text-transform: uppercase; }
         .status-btn.done { opacity: 1; color: var(--success); background: rgba(46, 213, 115, 0.1); }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        table { width: 100%; border-collapse: collapse; }
         th { padding: 8px; color: var(--dim); font-size: 0.55rem; text-transform: uppercase; }
         td { padding: 4px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
         
-        .data-cell { width: 42px; height: 32px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 5px; text-align: center; color: white; font-family: 'JetBrains Mono'; }
-        .data-cell:disabled { opacity: 0.1; background: transparent; border: none; color: transparent; }
+        /* CHAMPS DE DONNÉES */
+        .data-cell { width: 42px; height: 32px; background: rgba(255,255,255,0.1); border: 1px solid var(--card-border); border-radius: 5px; text-align: center; color: white; font-family: 'JetBrains Mono'; font-weight: 700; }
+        
+        /* STYLE LECTURE SEULE (INTERDIT) */
+        .data-cell:disabled { 
+            background: rgba(255,255,255,0.02); 
+            border: 1px solid transparent; 
+            color: rgba(255,255,255,0.6); /* Toujours lisible mais plus sombre */
+            cursor: not-allowed;
+        }
         
         .total-row { color: var(--accent); font-weight: 800; background: rgba(0, 242, 255, 0.05); }
         .signature { text-align: center; color: var(--dim); font-size: 0.6rem; padding: 40px; text-transform: uppercase; letter-spacing: 2px; }
@@ -61,7 +67,7 @@
 
 <div class="fixed-header">
     <div id="cloud-status">INITIALISATION...</div>
-    <input type="text" id="global-search" class="global-search" placeholder="🔍 RECHERCHE PARTOUT (CLIENT OU N°)..." oninput="runSearch()">
+    <input type="text" id="global-search" class="global-search" placeholder="🔍 RECHERCHE GLOBALE (NOM OU N°)..." oninput="runSearch()">
 </div>
 
 <div class="nav-tabs">
@@ -81,9 +87,9 @@
     <div id="creation-zone" class="glass-panel" style="display:none">
         <input type="text" id="c-num" placeholder="N° COMMANDE">
         <input type="text" id="c-client" placeholder="NOM CLIENT">
-        <input type="text" id="c-cat" placeholder="TYPE DE VÊTEMENT (EX: CHEMISE, ROBE...)">
+        <input type="text" id="c-cat" placeholder="TYPE (EX: CHEMISE, ROBE...)">
         <input type="text" id="c-tailles" placeholder="TAILLES (Ex: S, M, L, XL)">
-        <button class="btn-full" style="background:var(--success)" onclick="createOrder()">LANCER LA FABRICATION</button>
+        <button class="btn-full" style="background:var(--success)" onclick="createOrder()">CRÉER LA FICHE</button>
     </div>
 
     <div class="filter-bar" id="category-filters"></div>
@@ -94,7 +100,7 @@
     <div id="arch-list"></div>
 </div>
 
-<div class="signature">SSM CLOUD HUB // v7.6 // 2026-03-05</div>
+<div class="signature">SSM CLOUD HUB // v7.7 // 2026-03-05</div>
 
 <script>
     const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxVCFe2eAIuMscUhVKqUqN1v6fAl2lRtLPvFdjouhMMg8_yBByb1Yqe3GX9opUx40km/exec";
@@ -121,7 +127,7 @@
                 runSearch();
                 setStatus("CLOUD SYNCHRONISÉ", "sync-ok");
             }
-        } catch (e) { setStatus("MODE LOCAL", "sync-load"); }
+        } catch (e) { setStatus("MODE CONSULTATION", "sync-load"); }
     }
 
     async function pushData() {
@@ -130,7 +136,7 @@
         try {
             await fetch(CLOUD_URL, { method: "POST", mode: 'no-cors', body: JSON.stringify({ action: "save", payload: appData }) });
             setStatus("SAUVEGARDÉ", "sync-ok");
-        } catch (e) { setStatus("ERREUR ENVOI", "sync-load"); }
+        } catch (e) { setStatus("ERREUR LIAISON", "sync-load"); }
     }
 
     function setStatus(t, c) {
@@ -143,12 +149,13 @@
         if(role) {
             document.getElementById('creation-zone').style.display = (role === 'coupe' ? 'block' : 'none');
             runSearch();
-            alert("ACCÈS : " + role.toUpperCase());
-        } else { alert("Code invalide"); }
+            alert("Secteur identifié : " + role.toUpperCase());
+        } else { alert("Code inconnu"); }
     }
 
-    function isLocked(field) {
-        if (!role) return true;
+    // LOGIQUE DE VERROUILLAGE : Lisible pour tous, modifiable par code
+    function isReadOnly(field) {
+        if (!role) return true; 
         if (role === 'coupe' && field === 'c') return false;
         if (role === 'couture' && (field === 'cok' || field === 'crb')) return false;
         if (role === 'logo' && (field === 'lok' || field === 'lrb')) return false;
@@ -162,7 +169,7 @@
               t = document.getElementById('c-tailles').value, 
               cat = document.getElementById('c-cat').value.toUpperCase().trim();
         
-        if(!n || !c || !t || !cat) return alert("Remplis tous les champs !");
+        if(!n || !c || !t || !cat) return alert("Complétez tous les champs");
         
         appData.prod.push({
             id: Date.now(), num: n, client: c.toUpperCase(), cat: cat,
@@ -170,17 +177,11 @@
             status: { coupe:'', couture:'', logo:'', finition:'' }
         });
         
-        document.getElementById('c-num').value = "";
-        document.getElementById('c-client').value = "";
-        document.getElementById('c-cat').value = "";
-        runSearch(); pushData();
+        document.getElementById('c-num').value = ""; document.getElementById('c-client').value = "";
+        document.getElementById('c-cat').value = ""; runSearch(); pushData();
     }
 
-    // FONCTION UNIQUE DE RECHERCHE ET RENDU
-    function runSearch() {
-        renderProd();
-        renderArchives();
-    }
+    function runSearch() { renderProd(); renderArchives(); }
 
     function renderProd() {
         const query = document.getElementById('global-search').value.toLowerCase();
@@ -193,9 +194,9 @@
 
         const container = document.getElementById('prod-list');
         const filtered = appData.prod.filter(f => {
-            const matchQuery = f.client.toLowerCase().includes(query) || f.num.toLowerCase().includes(query);
-            const matchCat = currentFilter === "TOUS" || f.cat === currentFilter;
-            return matchQuery && matchCat;
+            const matchQ = f.client.toLowerCase().includes(query) || f.num.toLowerCase().includes(query);
+            const matchC = currentFilter === "TOUS" || f.cat === currentFilter;
+            return matchQ && matchC;
         });
 
         container.innerHTML = filtered.slice().reverse().map(f => {
@@ -205,15 +206,15 @@
             return `
             <div class="order-card">
                 <div class="card-header">
-                    <div><strong>#${f.num}</strong> ${f.client}<span class="cat-tag">${f.cat}</span></div>
+                    <div><strong>#${f.num}</strong> ${f.client} <span class="cat-tag">${f.cat}</span></div>
                     <div style="display:flex; gap:8px;">
-                        <button style="background:var(--success); color:#000; padding:5px 10px; font-size:0.6rem" onclick="archiveOrder(${f.id})">TERMINER</button>
+                        <button style="background:var(--success); padding:5px 10px; font-size:0.6rem" onclick="archiveOrder(${f.id})">TERMINER</button>
                         ${role === 'coupe' ? `<button class="btn-del" onclick="deleteOrder(${f.id}, 'prod')">X</button>` : ''}
                     </div>
                 </div>
                 <div class="status-grid">
                     ${['coupe','couture','logo','finition'].map(st => `
-                        <div class="status-btn ${f.status[st]}" onclick="${role === st ? `toggleStatus(${f.id},'${st}')` : `alert('Secteur ${st.toUpperCase()} requis')`}">
+                        <div class="status-btn ${f.status[st]}" onclick="${role === st ? `toggleStatus(${f.id},'${st}')` : `alert('Action réservée au secteur ${st}')`}">
                             ${st}
                         </div>
                     `).join('')}
@@ -223,13 +224,13 @@
                         <tr><th>T</th><th>C</th><th>CO</th><th>RB</th><th>L</th><th>RB</th><th>F</th><th>RB</th></tr>
                         ${f.data.map((r, i) => `<tr>
                             <td style="font-weight:800; color:var(--accent)">${r.t}</td>
-                            <td><input type="tel" class="data-cell" ${isLocked('c') ? 'disabled' : ''} value="${r.c}" onchange="upd(${f.id},${i},'c',this.value)"></td>
-                            <td><input type="tel" class="data-cell" ${isLocked('cok') ? 'disabled' : ''} value="${r.cok}" onchange="upd(${f.id},${i},'cok',this.value)"></td>
-                            <td><input type="tel" class="data-cell" ${isLocked('crb') ? 'disabled' : ''} style="color:var(--danger)" value="${r.crb}" onchange="upd(${f.id},${i},'crb',this.value)"></td>
-                            <td><input type="tel" class="data-cell" ${isLocked('lok') ? 'disabled' : ''} value="${r.lok}" onchange="upd(${f.id},${i},'lok',this.value)"></td>
-                            <td><input type="tel" class="data-cell" ${isLocked('lrb') ? 'disabled' : ''} style="color:var(--danger)" value="${r.lrb}" onchange="upd(${f.id},${i},'lrb',this.value)"></td>
-                            <td><input type="tel" class="data-cell" ${isLocked('fok') ? 'disabled' : ''} value="${r.fok}" onchange="upd(${f.id},${i},'fok',this.value)"></td>
-                            <td><input type="tel" class="data-cell" ${isLocked('frb') ? 'disabled' : ''} style="color:var(--danger)" value="${r.frb}" onchange="upd(${f.id},${i},'frb',this.value)"></td>
+                            <td><input type="tel" class="data-cell" ${isReadOnly('c') ? 'disabled' : ''} value="${r.c}" onchange="upd(${f.id},${i},'c',this.value)"></td>
+                            <td><input type="tel" class="data-cell" ${isReadOnly('cok') ? 'disabled' : ''} value="${r.cok}" onchange="upd(${f.id},${i},'cok',this.value)"></td>
+                            <td><input type="tel" class="data-cell" ${isReadOnly('crb') ? 'disabled' : ''} style="color:var(--danger)" value="${r.crb}" onchange="upd(${f.id},${i},'crb',this.value)"></td>
+                            <td><input type="tel" class="data-cell" ${isReadOnly('lok') ? 'disabled' : ''} value="${r.lok}" onchange="upd(${f.id},${i},'lok',this.value)"></td>
+                            <td><input type="tel" class="data-cell" ${isReadOnly('lrb') ? 'disabled' : ''} style="color:var(--danger)" value="${r.lrb}" onchange="upd(${f.id},${i},'lrb',this.value)"></td>
+                            <td><input type="tel" class="data-cell" ${isReadOnly('fok') ? 'disabled' : ''} value="${r.fok}" onchange="upd(${f.id},${i},'fok',this.value)"></td>
+                            <td><input type="tel" class="data-cell" ${isReadOnly('frb') ? 'disabled' : ''} style="color:var(--danger)" value="${r.frb}" onchange="upd(${f.id},${i},'frb',this.value)"></td>
                         </tr>`).join('')}
                         <tr class="total-row"><td>Σ</td><td>${s.c}</td><td>${s.cok}</td><td>${s.crb}</td><td>${s.lok}</td><td>${s.lrb}</td><td>${s.fok}</td><td>${s.frb}</td></tr>
                     </table>
@@ -249,32 +250,27 @@
     }
 
     function setFilter(c) { currentFilter = c; renderProd(); }
-
     function upd(fid, idx, field, val) {
         const f = appData.prod.find(x => x.id === fid);
         if(f) { f.data[idx][field] = parseInt(val) || 0; renderProd(); pushData(); }
     }
-
     function toggleStatus(fid, s) {
         const f = appData.prod.find(x => x.id === fid);
         if(f) { f.status[s] = f.status[s] === 'done' ? '' : 'done'; renderProd(); pushData(); }
     }
-
     function archiveOrder(fid) {
-        if(!confirm("Archiver cette commande ?")) return;
+        if(!confirm("Archiver ?")) return;
         const idx = appData.prod.findIndex(x => x.id === fid);
         appData.arch.push(appData.prod[idx]);
         appData.prod.splice(idx, 1);
         runSearch(); pushData();
     }
-
     function deleteOrder(fid, type) {
-        if(!confirm("Supprimer cette fiche ?")) return;
+        if(!confirm("Supprimer ?")) return;
         if(type === 'prod') appData.prod = appData.prod.filter(x => x.id !== fid);
         else appData.arch = appData.arch.filter(x => x.id !== fid);
         runSearch(); pushData();
     }
-
     function switchTab(t) {
         document.getElementById('section-prod').style.display = t === 'prod' ? 'block' : 'none';
         document.getElementById('section-arch').style.display = t === 'arch' ? 'block' : 'none';
@@ -283,9 +279,7 @@
         runSearch();
     }
     
-    setInterval(async () => { 
-        if (document.activeElement.id !== 'global-search' && document.activeElement.tagName !== 'INPUT') await pullData(); 
-    }, 60000);
+    setInterval(async () => { if (document.activeElement.tagName !== 'INPUT') await pullData(); }, 60000);
 </script>
 </body>
 </html>
