@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM // CLOUD HUB v6.0</title>
+    <title>SSM // CLOUD HUB v6.1</title>
 
     <link rel="manifest" href='data:application/manifest+json,{"name":"Shin Sekai Master","short_name":"SSM","start_url":".","display":"standalone","background_color":"#030508","theme_color":"#00f2ff","icons":[{"src":"https://via.placeholder.com/192/00f2ff/000000?text=SSM","sizes":"192x192","type":"image/png"}]}'>
     <script>
@@ -26,43 +26,33 @@
         ::-webkit-scrollbar { display: none; }
         body { background-color: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 20px; }
         
-        /* Navigation */
         .nav-tabs { display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid var(--card-border); }
         .nav-btn { background: transparent; color: var(--dim); border: none; padding: 12px 25px; cursor: pointer; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; }
         .nav-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
 
-        /* Panels */
         .glass-panel { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
         .data-cell { width: 60px; height: 40px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); border-radius: 8px; color: #fff; font-family: 'JetBrains Mono'; text-align: center; font-size: 1rem; }
         .view-only { pointer-events: none; border: none !important; background: transparent !important; opacity: 1; font-weight: 800; }
         
-        /* Cards */
         .order-card { background: var(--card-bg); border: 2px solid var(--accent); border-radius: 20px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 242, 255, 0.05); border-bottom: 1px solid var(--card-border); }
         
-        /* Status Bar */
         .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--card-border); }
         .status-btn { padding: 12px; text-align: center; font-size: 0.7rem; font-weight: 800; border-right: 1px solid var(--card-border); color: #64748b; cursor: pointer; text-transform: uppercase; }
         .status-btn.done { color: var(--success); background: rgba(46, 213, 115, 0.1); text-decoration: underline; }
 
-        /* Tables */
         table { width: 100%; border-collapse: collapse; }
         th { font-size: 0.6rem; color: var(--dim); padding: 10px; text-transform: uppercase; letter-spacing: 1px; }
         td { padding: 8px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .total-row { background: rgba(0, 242, 255, 0.1); font-weight: 800; color: var(--accent); border-top: 2px solid var(--accent); }
 
-        /* Buttons & UI */
         button { background: var(--accent); color: #000; font-weight: 800; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; transition: 0.3s; }
-        button:active { transform: scale(0.95); }
         .btn-del { background: var(--danger) !important; color: white !important; }
-        .btn-pdf { background: #ff4757 !important; color: white !important; }
         
-        /* Modals */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); padding: 20px; overflow-y: auto; }
         .modal-content { background: var(--bg); max-width: 900px; margin: auto; border: 2px solid var(--accent); border-radius: 20px; padding: 20px; position: relative; }
         .close { position: absolute; right: 20px; top: 15px; color: var(--danger); font-size: 2rem; cursor: pointer; }
 
-        /* Cloud Status */
         #cloud-status { position: fixed; top: 10px; right: 10px; font-size: 0.6rem; padding: 5px 12px; border-radius: 20px; background: rgba(0,0,0,0.8); z-index: 2000; font-weight: 800; }
         .sync-ok { color: var(--success); border: 1px solid var(--success); }
         .sync-load { color: var(--accent); border: 1px solid var(--accent); }
@@ -117,10 +107,12 @@
 
 <div id="pdf-export-zone"></div>
 
-<div class="signature"> [ 2026-03-09 ] — SHIN SEKAI MASTER CLOUD — v6.0 </div>
+<div class="signature"> [ 2026-03-09 ] — SHIN SEKAI MASTER CLOUD — v6.1 </div>
 
 <script>
-    const CLOUD_URL = "https://script.google.com/macros/s/AKfycbx7f3-CnYPrNkwO5RqfcWQL2tePjYx6l3WMDId92zZ5z3WeSfbciIWLBBpwM1yrUSPM/exec";
+    // NOUVELLE URL DÉPLOYÉE
+    const CLOUD_URL = "https://script.google.com/macros/s/AKfycbx9kYdX2PnHIBoEn-KqGcH7qXlKXJb71zsR6OZmgCH_u8qCoc29AU2ooTMJ4vrdLQHj/exec";
+    
     let role = "";
     let appData = { prod: [], arch: [] };
     const sectors = { '1111': 'coupe', '2222': 'couture', '3333': 'logo', '4444': 'finition' };
@@ -138,21 +130,22 @@
             }
             renderProd();
             setSyncStatus("SYNCHRONISÉ", "sync-ok");
-        } catch (e) { setSyncStatus("ERREUR RÉSEAU", "sync-load"); }
+        } catch (e) { 
+            console.error(e);
+            setSyncStatus("ERREUR RÉSEAU", "sync-load"); 
+        }
     }
 
     async function pushData() {
-        // Sécurité anti-effacement : ne jamais envoyer si les deux listes sont vides par erreur technique
         if (appData.prod.length === 0 && appData.arch.length === 0) return;
-        
         setSyncStatus("ENVOI CLOUD...", "sync-load");
         try {
             await fetch(CLOUD_URL, { 
                 method: "POST", 
-                mode: 'no-cors',
+                mode: 'no-cors', // Évite les blocages CORS navigateurs
                 body: JSON.stringify({ action: "save", payload: appData }) 
             });
-            setSyncStatus("SYNCHRONISÉ", "sync-ok");
+            setTimeout(pullData, 1000); // Re-synchronise après l'envoi
         } catch (e) { setSyncStatus("ERREUR CLOUD", "sync-load"); }
     }
 
@@ -183,10 +176,8 @@
             status: { coupe:'', couture:'', logo:'', finition:'' }
         });
         
-        // Reset champs
         document.getElementById('c-num').value = "";
         document.getElementById('c-client').value = "";
-        
         renderProd();
         await pushData();
     }
@@ -296,7 +287,6 @@
         if(v === 'archive') renderArchives();
     }
 
-    // Auto-Sync toutes les 60 secondes pour mettre à jour les écrans des collègues
     setInterval(async () => { 
         if (document.activeElement.tagName !== 'INPUT') await pullData(); 
     }, 60000);
