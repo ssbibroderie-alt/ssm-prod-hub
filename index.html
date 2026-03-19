@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SSM CLOUD HUB v7.9 - TOTAUX RÉACTIVÉS</title>
+    <title>SSM CLOUD HUB v8.0 - FINAL FIX</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -34,6 +34,9 @@
         .order-card { background: var(--card-bg); border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border); overflow: hidden; border-left: 4px solid var(--accent); }
         .card-header { padding: 12px; background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); }
         
+        /* BADGE CATÉGORIE RE-AJOUTÉ */
+        .cat-tag { font-size: 0.6rem; background: var(--accent); color: #000; padding: 3px 8px; border-radius: 4px; font-weight: 800; text-transform: uppercase; margin-left: 10px; }
+
         .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
         .status-btn { padding: 10px; text-align: center; font-size: 0.6rem; font-weight: 800; border-right: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border); color: var(--dim); opacity: 0.3; }
         .status-btn.done { opacity: 1; color: var(--success); background: rgba(46, 213, 115, 0.1); }
@@ -45,7 +48,6 @@
         .data-cell { width: 42px; height: 32px; background: rgba(255,255,255,0.12); border: 1px solid var(--card-border); border-radius: 5px; text-align: center; color: #ffffff !important; font-family: 'JetBrains Mono'; font-weight: 700; font-size: 0.9rem; }
         .data-cell:read-only { background: rgba(255,255,255,0.02); border-color: transparent; outline: none; }
         
-        /* LIGNE DES TOTAUX */
         .total-row { background: rgba(0, 242, 255, 0.08); font-weight: 800; color: var(--accent); font-family: 'JetBrains Mono'; font-size: 0.8rem; }
         .total-row td { border-top: 1px solid var(--accent); padding: 8px 4px; }
 
@@ -73,9 +75,9 @@
     <div id="creation-zone" class="glass-panel" style="display:none">
         <input type="text" id="c-num" placeholder="N° COMMANDE">
         <input type="text" id="c-client" placeholder="NOM CLIENT">
-        <input type="text" id="c-cat" placeholder="TYPE DE VÊTEMENT">
+        <input type="text" id="c-cat" placeholder="CATÉGORIE (Ex: POLO, VESTE)">
         <input type="text" id="c-tailles" placeholder="TAILLES (Ex: S, M, L)">
-        <button class="btn-full" style="background:var(--success)" onclick="createOrder()">CRÉER</button>
+        <button class="btn-full" style="background:var(--success)" onclick="createOrder()">CRÉER LA FICHE</button>
     </div>
 
     <div id="prod-list"></div>
@@ -83,7 +85,7 @@
 
 <div id="section-arch" style="display:none"><div id="arch-list"></div></div>
 
-<div class="signature">2026-03-05 — SSM CLOUD HUB v7.9</div>
+<div class="signature">2026-03-05 — SSM CLOUD HUB v8.0</div>
 
 <script>
     const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxVCFe2eAIuMscUhVKqUqN1v6fAl2lRtLPvFdjouhMMg8_yBByb1Yqe3GX9opUx40km/exec";
@@ -134,20 +136,20 @@
         const n = document.getElementById('c-num').value, c = document.getElementById('c-client').value, t = document.getElementById('c-tailles').value, cat = document.getElementById('c-cat').value.toUpperCase();
         if(!n || !c || !t) return;
         appData.prod.push({
-            id: Date.now(), num: n, client: c.toUpperCase(), cat: cat,
+            id: Date.now(), num: n, client: c.toUpperCase(), cat: cat || "N/A",
             data: t.split(',').map(s => ({ t:s.trim(), c:0, cok:0, crb:0, lok:0, lrb:0, fok:0, frb:0 })),
             status: { coupe:'', couture:'', logo:'', finition:'' }
         });
+        document.getElementById('c-num').value=''; document.getElementById('c-client').value='';
         runSearch(); pushData();
     }
 
     function runSearch() {
         const query = document.getElementById('global-search').value.toLowerCase();
         const container = document.getElementById('prod-list');
-        const filtered = appData.prod.filter(f => f.client.toLowerCase().includes(query) || f.num.toLowerCase().includes(query));
+        const filtered = appData.prod.filter(f => f.client.toLowerCase().includes(query) || f.num.toLowerCase().includes(query) || (f.cat && f.cat.toLowerCase().includes(query)));
 
         container.innerHTML = filtered.slice().reverse().map(f => {
-            // CALCUL DES TOTAUX
             const s = {c:0, cok:0, crb:0, lok:0, lrb:0, fok:0, frb:0};
             f.data.forEach(r => { 
                 s.c += r.c; s.cok += r.cok; s.crb += r.crb; 
@@ -157,8 +159,8 @@
             return `
             <div class="order-card">
                 <div class="card-header">
-                    <div><strong>#${f.num}</strong> ${f.client}</div>
-                    <button style="background:var(--success); padding:5px; font-size:0.6rem" onclick="archiveOrder(${f.id})">TERMINER</button>
+                    <div><strong>#${f.num}</strong> ${f.client} <span class="cat-tag">${f.cat}</span></div>
+                    <button style="background:var(--success); padding:5px; font-size:0.6rem" onclick="archiveOrder(${f.id})">FINIR</button>
                 </div>
                 <div class="status-grid">
                     ${['coupe','couture','logo','finition'].map(st => `
